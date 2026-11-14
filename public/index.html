@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>תחרות העוגות</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Secular+One&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#F6F3FA; --surface:#FFFFFF; --ink:#251A33; --muted:#665A78; --line:#E2DAEC; --track:#ECE6F3;
+  --accent:#B8235A; --on-accent:#FFFFFF; --focus:#6D3FD0;
+  --c-taste:#B8235A; --c-looks:#1F7585; --c-create:#A65D0A; --on-cat:#FFFFFF;
+  --font-display:"Secular One","Heebo",system-ui,sans-serif;
+  --font-body:"Heebo",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16111D; --surface:#211A2C; --ink:#F1EAF8; --muted:#A99BBE; --line:#362D46; --track:#2D2439;
+    --accent:#F06595; --on-accent:#1B1325; --focus:#B197FC;
+    --c-taste:#F06595; --c-looks:#4FB3C4; --c-create:#F0A04B; --on-cat:#1B1325;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:16px; line-height:1.5;
+  padding-block:20px 40px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap{max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:16px; min-width:0}
+h1,h2,h3{font-family:var(--font-display); font-weight:400; margin:0; text-wrap:balance}
+h1{font-size:2rem; line-height:1.15}
+h2{font-size:1.25rem}
+h3{font-size:1.15rem}
+p{margin:0}
+.meta{color:var(--muted); font-size:.9rem; margin-top:4px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px; display:flex; flex-direction:column; gap:12px; min-width:0}
+.note{color:var(--muted); font-size:.92rem}
+.tabs{display:flex; gap:4px; border-bottom:1px solid var(--line)}
+.tab{
+  appearance:none; background:none; border:0; border-bottom:3px solid transparent; margin-bottom:-1px;
+  font:inherit; font-weight:500; color:var(--muted); padding:10px 14px; cursor:pointer; min-height:44px;
+}
+.tab[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--accent)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+.btn{
+  appearance:none; border:0; border-radius:8px; background:var(--accent); color:var(--on-accent);
+  font:inherit; font-weight:700; padding:10px 18px; min-height:44px; cursor:pointer; align-self:flex-start;
+}
+.btn.ghost{background:none; color:var(--ink); border:1px solid var(--line)}
+.btn:disabled{opacity:.5; cursor:not-allowed}
+.field{display:flex; flex-direction:column; gap:6px}
+.field label{font-weight:500; font-size:.92rem}
+input[type=text],textarea{
+  font:inherit; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:8px;
+  padding:10px 12px; min-height:44px; width:100%; direction:rtl;
+}
+textarea{min-height:76px; resize:vertical}
+.cake-head{display:flex; flex-direction:column; gap:2px}
+.baker{color:var(--muted); font-size:.9rem}
+.desc{font-size:.95rem}
+.row{display:grid; grid-template-columns:5.5rem 1fr; align-items:center; gap:8px}
+.lab{font-weight:500; font-size:.95rem}
+.chips{display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:6px}
+.chip{
+  appearance:none; font:inherit; font-weight:700; font-variant-numeric:tabular-nums; cursor:pointer;
+  min-height:44px; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--ink);
+}
+.chip[aria-pressed="true"]{background:var(--cat); border-color:var(--cat); color:var(--on-cat)}
+.chip:disabled{opacity:.45; cursor:not-allowed}
+.tag{display:inline-block; font-size:.78rem; font-weight:700; padding:2px 8px; border-radius:99px; background:var(--track); color:var(--muted); align-self:flex-start}
+.tag.done{background:var(--accent); color:var(--on-accent)}
+.leaders{display:grid; grid-template-columns:repeat(auto-fit, minmax(170px,1fr)); gap:10px}
+.leader{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:12px 14px; display:flex; flex-direction:column; gap:2px; min-width:0}
+.leader .k{font-size:.8rem; font-weight:700; color:var(--cat)}
+.leader .v{font-weight:500; overflow-wrap:anywhere}
+.board{display:flex; flex-direction:column; gap:10px}
+.entry{display:grid; grid-template-columns:2.4rem 1fr auto; gap:6px 12px; align-items:start}
+.rank{font-family:var(--font-display); font-size:1.7rem; line-height:1.1; color:var(--muted); font-variant-numeric:tabular-nums}
+.entry:first-child .rank{color:var(--accent)}
+.score{font-family:var(--font-display); font-size:1.7rem; line-height:1.1; font-variant-numeric:tabular-nums}
+.title-col{min-width:0; overflow-wrap:anywhere}
+.bars{grid-column:2 / 4; display:flex; flex-direction:column; gap:6px}
+.bar{display:grid; grid-template-columns:5.5rem 1fr 2.2rem; align-items:center; gap:8px; font-size:.85rem}
+.track{height:8px; background:var(--track); border-radius:99px; overflow:hidden}
+.fill{height:100%; background:var(--cat); border-radius:99px}
+.num{font-variant-numeric:tabular-nums; text-align:left; color:var(--muted)}
+.empty{text-align:center; padding:28px 16px; color:var(--muted)}
+.empty strong{display:block; color:var(--ink); font-family:var(--font-display); font-weight:400; font-size:1.15rem; margin-bottom:4px}
+#status{min-height:1.4em; font-size:.9rem; color:var(--accent); font-weight:500}
+.actions{display:flex; gap:8px; flex-wrap:wrap}
+@media (prefers-reduced-motion: no-preference){ .fill{transition:width .3s ease} }
+@media (max-width:420px){ .row{grid-template-columns:4.6rem 1fr} .bar{grid-template-columns:4.6rem 1fr 2.2rem} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>תחרות העוגות</h1>
+    <p class="meta" id="meta">טוען…</p>
+  </header>
+  <section id="gate" hidden></section>
+  <nav class="tabs" role="tablist" aria-label="חלקי התחרות">
+    <button class="tab" role="tab" data-tab="rate">דירוג</button>
+    <button class="tab" role="tab" data-tab="board">תוצאות</button>
+    <button class="tab" role="tab" data-tab="mine">העוגה שלי</button>
+  </nav>
+  <main id="panel"></main>
+  <p id="status" role="status" aria-live="polite"></p>
+</div>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s); };
+
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+
+  var CATS = [
+    {k:"taste", label:"טעם", css:"--c-taste", best:"הכי טעימה"},
+    {k:"looks", label:"נראות", css:"--c-looks", best:"הכי יפה"},
+    {k:"creativity", label:"יצירתיות", css:"--c-create", best:"הכי יצירתית"}
+  ];
+  var TABS = ["rate","board","mine"];
+
+  /* A secret token stays in this browser. The server turns it into the public id. */
+  function makeToken(){
+    var a = new Uint8Array(24); crypto.getRandomValues(a);
+    var s = ""; for (var i = 0; i < a.length; i++) s += String.fromCharCode(a[i]);
+    return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  }
+  var TOKEN = null;
+  try { TOKEN = localStorage.getItem("cake-token"); } catch(e){}
+  if (!TOKEN){
+    TOKEN = makeToken();
+    try { localStorage.setItem("cake-token", TOKEN); } catch(e){}
+  }
+
+  var uid = null;
+  var S = { people:{}, cakes:{}, ratings:{}, myScores:{}, loaded:false, tab:"rate" };
+  var statusTimer = null;
+
+  function setStatus(msg, ms){
+    var el = $("#status"); el.textContent = msg || "";
+    clearTimeout(statusTimer);
+    if (msg && ms !== 0) statusTimer = setTimeout(function(){ el.textContent = ""; }, ms || 5000);
+  }
+  function writeErr(e){
+    if (e && e.error === "not_registered") return "קודם צריך להירשם לתחרות.";
+    if (e && e.error === "full") return "התחרות מלאה ואי אפשר להירשם עוד.";
+    return "השמירה נכשלה. נסו שוב בעוד רגע.";
+  }
+
+  function api(path, opts){
+    opts = opts || {};
+    return fetch("/api/" + path, {
+      method: opts.method || "GET",
+      headers: {"x-token": TOKEN, "content-type": "application/json"},
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    }).then(function(r){
+      return r.json().then(function(d){ if (!r.ok) throw d; return d; });
+    });
+  }
+
+  function tabFromHash(){
+    var h = (location.hash || "").replace("#","");
+    return TABS.indexOf(h) >= 0 ? h : "rate";
+  }
+
+  /* ---------- aggregation ---------- */
+  function computeStats(){
+    var acc = {}, id, rid, cid, i;
+    for (id in S.cakes){ acc[id] = {sum:{taste:0,looks:0,creativity:0}, n:{taste:0,looks:0,creativity:0}, raters:0}; }
+    for (rid in S.ratings){
+      var sc = (S.ratings[rid] && S.ratings[rid].scores) || {};
+      for (cid in sc){
+        if (cid === rid || !acc[cid]) continue;
+        var any = false;
+        for (i = 0; i < CATS.length; i++){
+          var x = sc[cid] && sc[cid][CATS[i].k];
+          if (typeof x === "number" && x >= 1 && x <= 5){ acc[cid].sum[CATS[i].k] += x; acc[cid].n[CATS[i].k]++; any = true; }
+        }
+        if (any) acc[cid].raters++;
+      }
+    }
+    var out = [];
+    for (id in acc){
+      var a = acc[id], avg = {}, parts = [];
+      for (i = 0; i < CATS.length; i++){
+        var k = CATS[i].k;
+        avg[k] = a.n[k] ? a.sum[k] / a.n[k] : null;
+        if (avg[k] !== null) parts.push(avg[k]);
+      }
+      var overall = parts.length ? parts.reduce(function(p,c){ return p + c; }, 0) / parts.length : null;
+      out.push({id:id, cake:S.cakes[id], avg:avg, overall:overall, raters:a.raters});
+    }
+    out.sort(function(p,q){
+      if (p.overall === null && q.overall === null) return (p.cake.title || "").localeCompare(q.cake.title || "", "he");
+      if (p.overall === null) return 1;
+      if (q.overall === null) return -1;
+      if (q.overall !== p.overall) return q.overall - p.overall;
+      return q.raters - p.raters;
+    });
+    return out;
+  }
+  function f1(n){ return n === null ? "–" : n.toFixed(1); }
+  function baker(id){ return (S.people[id] && S.people[id].name) || "מתחרה"; }
+  function raterCount(){
+    var n = 0, rid;
+    for (rid in S.ratings){ var sc = (S.ratings[rid] && S.ratings[rid].scores) || {}; if (Object.keys(sc).length) n++; }
+    return n;
+  }
+  function isRegistered(){ return !!(uid && S.people[uid]); }
+
+  /* ---------- header + gate ---------- */
+  var gateKey = null;
+  function renderHead(){
+    if (!S.loaded){ $("#meta").textContent = "טוען…"; return; }
+    var parts = [];
+    var nc = Object.keys(S.cakes).length;
+    parts.push(nc + (nc === 1 ? " עוגה" : " עוגות"));
+    var nr = raterCount();
+    parts.push(nr + (nr === 1 ? " מדרג" : " מדרגים"));
+    if (isRegistered()) parts.push("שלום, " + S.people[uid].name);
+    $("#meta").textContent = parts.join(" · ");
+  }
+  function renderGate(){
+    var g = $("#gate");
+    var key = !S.loaded ? "loading" : (isRegistered() ? "in" : "out");
+    if (key === gateKey) return;
+    gateKey = key;
+    if (key === "in" || key === "loading"){ g.hidden = true; g.innerHTML = ""; return; }
+    g.hidden = false;
+    g.innerHTML =
+      '<form class="card" id="regForm">' +
+        '<h2>הרשמה לתחרות</h2>' +
+        '<p class="note">כל מי שנרשם יכול לדרג עוגות בשלושה קריטריונים, ולהכניס עוגה משלו לתחרות.</p>' +
+        '<div class="field"><label for="regName">איך לקרוא לך?</label>' +
+        '<input type="text" id="regName" maxlength="30" autocomplete="name" required></div>' +
+        '<button class="btn" type="submit">הרשמה</button>' +
+      '</form>';
+    $("#regForm").addEventListener("submit", function(ev){
+      ev.preventDefault();
+      var name = $("#regName").value.trim();
+      if (!name) return;
+      var btn = ev.target.querySelector("button"); btn.disabled = true;
+      api("register", {method:"POST", body:{name:name}}).then(function(){
+        setStatus("נרשמת לתחרות.");
+        return load();
+      }).catch(function(e){ btn.disabled = false; setStatus(writeErr(e)); });
+    });
+  }
+
+  /* ---------- tabs ---------- */
+  function renderTabs(){
+    var btns = document.querySelectorAll(".tab");
+    for (var i = 0; i < btns.length; i++){
+      btns[i].setAttribute("aria-selected", btns[i].getAttribute("data-tab") === S.tab ? "true" : "false");
+    }
+  }
+
+  /* ---------- panels ---------- */
+  var lastMineKey = null;
+  function renderPanel(){
+    var p = $("#panel");
+    if (!S.loaded){
+      p.dataset.tab = "loading"; lastMineKey = null;
+      p.innerHTML = '<div class="empty">טוען את התחרות…</div>';
+      return;
+    }
+    if (S.tab === "rate") renderRate(p);
+    else if (S.tab === "board") renderBoard(p);
+    else renderMine(p);
+  }
+
+  function cakeComplete(id){
+    var sc = S.myScores[id]; if (!sc) return false;
+    return CATS.every(function(c){ return typeof sc[c.k] === "number"; });
+  }
+
+  function renderRate(p){
+    lastMineKey = null; p.dataset.tab = "rate";
+    var ids = Object.keys(S.cakes).filter(function(id){ return id !== uid; });
+    if (!ids.length){
+      p.innerHTML = '<div class="card empty"><strong>עוד אין עוגות בתחרות</strong>' +
+        (Object.keys(S.cakes).length ? 'העוגה היחידה בתחרות היא שלך. חכו שיצטרפו עוד מתחרים.' :
+        'הירשמו ואז הוסיפו את העוגה הראשונה בלשונית "העוגה שלי".') + '</div>';
+      return;
+    }
+    ids.sort(function(a,b){ return (S.cakes[a].title || "").localeCompare(S.cakes[b].title || "", "he"); });
+    var done = ids.filter(cakeComplete).length;
+    var can = isRegistered();
+    var html = '<div class="board">';
+    html += '<p class="note">' + (can ? 'דירגתם ' + done + ' מתוך ' + ids.length + ' עוגות. לחיצה נוספת על ציון מבטלת אותו.' :
+      'הירשמו למעלה כדי לדרג.') + '</p>';
+    ids.forEach(function(id){
+      var c = S.cakes[id], sc = S.myScores[id] || {};
+      html += '<article class="card"><div class="cake-head"><h3>' + esc(c.title) + '</h3>' +
+        '<span class="baker">מאת ' + esc(baker(id)) + '</span></div>' +
+        (c.desc ? '<p class="desc">' + esc(c.desc) + '</p>' : '') +
+        (cakeComplete(id) ? '<span class="tag done">דירגת</span>' : '');
+      CATS.forEach(function(cat){
+        html += '<div class="row" style="--cat:var(' + cat.css + ')"><span class="lab">' + cat.label + '</span>' +
+          '<div class="chips" role="group" aria-label="' + cat.label + '">';
+        for (var v = 1; v <= 5; v++){
+          html += '<button class="chip" data-cake="' + esc(id) + '" data-cat="' + cat.k + '" data-v="' + v + '" aria-pressed="' +
+            (sc[cat.k] === v) + '"' + (can ? '' : ' disabled') + '>' + v + '</button>';
+        }
+        html += '</div></div>';
+      });
+      html += '</article>';
+    });
+    html += '</div>';
+    p.innerHTML = html;
+  }
+
+  function renderBoard(p){
+    lastMineKey = null; p.dataset.tab = "board";
+    var stats = computeStats();
+    if (!stats.length){
+      p.innerHTML = '<div class="card empty"><strong>עוד אין תוצאות</strong>כשיירשמו עוגות ויגיעו ציונים, הדירוג יופיע כאן.</div>';
+      return;
+    }
+    var html = '<div class="board">';
+    var leaders = '';
+    CATS.forEach(function(cat){
+      var best = null;
+      stats.forEach(function(s){ if (s.avg[cat.k] !== null && (!best || s.avg[cat.k] > best.avg[cat.k])) best = s; });
+      if (best) leaders += '<div class="leader" style="--cat:var(' + cat.css + ')"><span class="k">' + cat.best + '</span>' +
+        '<span class="v">' + esc(best.cake.title) + '</span><span class="baker">' + f1(best.avg[cat.k]) + ' מתוך 5</span></div>';
+    });
+    if (leaders) html += '<div class="leaders">' + leaders + '</div>';
+    html += '<div class="card board">';
+    stats.forEach(function(s, i){
+      html += '<div class="entry"><span class="rank">' + (i + 1) + '</span>' +
+        '<div class="title-col"><h3>' + esc(s.cake.title) + '</h3><span class="baker">מאת ' + esc(baker(s.id)) +
+        (s.raters ? ' · ' + s.raters + (s.raters === 1 ? ' מדרג' : ' מדרגים') : ' · טרם דורגה') + '</span></div>' +
+        '<span class="score">' + f1(s.overall) + '</span>' +
+        '<div class="bars">';
+      CATS.forEach(function(cat){
+        var a = s.avg[cat.k];
+        html += '<div class="bar" style="--cat:var(' + cat.css + ')"><span>' + cat.label + '</span>' +
+          '<div class="track"><div class="fill" style="width:' + (a === null ? 0 : (a / 5 * 100).toFixed(1)) + '%"></div></div>' +
+          '<span class="num">' + f1(a) + '</span></div>';
+      });
+      html += '</div></div>';
+    });
+    html += '</div></div>';
+    p.innerHTML = html;
+  }
+
+  function renderMine(p){
+    if (p.dataset.tab !== "mine"){
+      p.dataset.tab = "mine"; lastMineKey = null;
+      p.innerHTML = '<div class="board"><div id="mineStats"></div><div id="mineForm"></div></div>';
+    }
+    var stats = $("#mineStats"), form = $("#mineForm");
+    if (!isRegistered()){
+      lastMineKey = "unreg";
+      stats.innerHTML = '';
+      form.innerHTML = '<div class="card empty"><strong>קודם נרשמים</strong>אחרי ההרשמה אפשר להוסיף כאן את העוגה שלך לתחרות.</div>';
+      return;
+    }
+    var mine = S.cakes[uid];
+    if (mine){
+      var me = computeStats().filter(function(s){ return s.id === uid; })[0];
+      var h = '<div class="card"><h2>הציונים של העוגה שלך</h2>';
+      if (me && me.raters){
+        h += '<p class="note">' + me.raters + (me.raters === 1 ? ' מדרג' : ' מדרגים') + ' עד עכשיו. ממוצע כללי ' + f1(me.overall) + '.</p><div class="bars" style="grid-column:auto">';
+        CATS.forEach(function(cat){
+          var a = me.avg[cat.k];
+          h += '<div class="bar" style="--cat:var(' + cat.css + ')"><span>' + cat.label + '</span><div class="track"><div class="fill" style="width:' +
+            (a === null ? 0 : (a / 5 * 100).toFixed(1)) + '%"></div></div><span class="num">' + f1(a) + '</span></div>';
+        });
+        h += '</div>';
+      } else h += '<p class="note">עוד אין ציונים לעוגה שלך.</p>';
+      stats.innerHTML = h + '</div>';
+    } else stats.innerHTML = '';
+
+    var key = JSON.stringify([S.people[uid], mine || null]);
+    if (key === lastMineKey) return;
+    lastMineKey = key;
+    form.innerHTML =
+      '<form class="card" id="cakeForm"><h2>' + (mine ? 'העוגה שלי' : 'הוספת עוגה לתחרות') + '</h2>' +
+      '<div class="field"><label for="cakeTitle">שם העוגה</label>' +
+      '<input type="text" id="cakeTitle" maxlength="60" required value="' + esc(mine ? mine.title : "") + '"></div>' +
+      '<div class="field"><label for="cakeDesc">תיאור קצר (לא חובה)</label>' +
+      '<textarea id="cakeDesc" maxlength="140">' + esc(mine ? mine.desc : "") + '</textarea></div>' +
+      '<div class="actions"><button class="btn" type="submit">' + (mine ? 'שמירת שינויים' : 'הוספה לתחרות') + '</button>' +
+      (mine ? '<button class="btn ghost" type="button" id="delCake">הסרת העוגה</button>' : '') + '</div></form>';
+    $("#cakeForm").addEventListener("submit", function(ev){
+      ev.preventDefault();
+      var title = $("#cakeTitle").value.trim(), desc = $("#cakeDesc").value.trim();
+      if (!title) return;
+      api("cake", {method:"POST", body:{title:title, desc:desc}}).then(function(){
+        setStatus("העוגה נשמרה.");
+        return load();
+      }).catch(function(e){ setStatus(writeErr(e)); });
+    });
+    var del = $("#delCake");
+    if (del){
+      var armed = false;
+      del.addEventListener("click", function(){
+        if (!armed){ armed = true; del.textContent = "לחצו שוב כדי להסיר"; return; }
+        api("cake", {method:"DELETE"}).then(function(){
+          setStatus("העוגה הוסרה מהתחרות.");
+          return load();
+        }).catch(function(e){ armed = false; del.textContent = "הסרת העוגה"; setStatus(writeErr(e)); });
+      });
+    }
+  }
+
+  function render(){ renderHead(); renderGate(); renderTabs(); renderPanel(); }
+
+  /* ---------- saving my ratings (one request at a time) ---------- */
+  var saving = false, dirty = false, saveTimer = null;
+  function queueSave(){ dirty = true; clearTimeout(saveTimer); saveTimer = setTimeout(runSave, 350); }
+  function runSave(){
+    if (saving) return;
+    saving = true;
+    (function loop(){
+      if (!dirty){ saving = false; return; }
+      dirty = false;
+      api("rate", {method:"POST", body:{scores:S.myScores}}).then(loop).catch(function(e){
+        saving = false; setStatus(writeErr(e));
+      });
+    })();
+  }
+
+  document.addEventListener("click", function(ev){
+    var tab = ev.target.closest && ev.target.closest(".tab");
+    if (tab){
+      var t = tab.getAttribute("data-tab");
+      if (location.hash !== "#" + t) location.hash = t; else { S.tab = t; render(); }
+      return;
+    }
+    var chip = ev.target.closest && ev.target.closest(".chip");
+    if (chip && !chip.disabled){
+      var cake = chip.getAttribute("data-cake"), cat = chip.getAttribute("data-cat"), v = Number(chip.getAttribute("data-v"));
+      if (!S.cakes[cake] || cake === uid) return;
+      var sc = S.myScores[cake] || (S.myScores[cake] = {});
+      if (sc[cat] === v) delete sc[cat]; else sc[cat] = v;
+      if (!Object.keys(sc).length) delete S.myScores[cake];
+      renderPanel(); queueSave();
+    }
+  });
+  window.addEventListener("hashchange", function(){ S.tab = tabFromHash(); render(); });
+
+  /* ---------- loading shared data ---------- */
+  var failedOnce = false;
+  function load(){
+    return api("state").then(function(d){
+      uid = d.me;
+      S.people = d.people || {}; S.cakes = d.cakes || {}; S.ratings = d.ratings || {};
+      S.loaded = true; failedOnce = false;
+      if (!saving && !dirty) S.myScores = clone((S.ratings[uid] && S.ratings[uid].scores) || {});
+      render();
+    }).catch(function(){
+      if (!failedOnce) setStatus("לא ניתן לטעון את הנתונים כרגע. מנסים שוב.");
+      failedOnce = true;
+    });
+  }
+
+  S.tab = tabFromHash();
+  render();
+  load();
+  setInterval(function(){ if (!document.hidden && !saving && !dirty) load(); }, 10000);
+})();
+</script>
+</body>
+</html>
